@@ -5,7 +5,9 @@ Integrates with Ollama for running LLMs locally.
 """
 
 import logging
-from typing import Any
+from typing import Any, Dict, List
+
+import httpx
 
 from neurobus.llm.connector import LLMConnector, LLMMessage, LLMResponse
 
@@ -70,8 +72,8 @@ class OllamaConnector(LLMConnector):
         self._stats["requests"] += 1
 
         try:
-            # Build request
-            request_data = {
+            # Prepare request payload
+            payload: Dict[str, Any] = {
                 "model": self.model,
                 "prompt": prompt,
                 "stream": False,
@@ -82,16 +84,17 @@ class OllamaConnector(LLMConnector):
             }
 
             if system_prompt:
-                request_data["system"] = system_prompt
+                payload["system"] = system_prompt
 
             # Add any additional options
             if kwargs:
-                request_data["options"].update(kwargs)
+                options_dict: Dict[str, Any] = payload["options"]  # type: ignore
+                options_dict.update(kwargs)
 
             # Make request
             response = await self._client.post(
                 "/api/generate",
-                json=request_data,
+                json=payload,
             )
             response.raise_for_status()
 
@@ -126,7 +129,7 @@ class OllamaConnector(LLMConnector):
 
     async def chat(
         self,
-        messages: list[LLMMessage],
+        messages: List[LLMMessage],
         **kwargs: Any,
     ) -> LLMResponse:
         """Chat completion using Ollama."""
@@ -135,17 +138,12 @@ class OllamaConnector(LLMConnector):
 
         try:
             # Convert messages to Ollama format
-            ollama_messages = []
-            for msg in messages:
-                ollama_messages.append(
-                    {
-                        "role": msg.role,
-                        "content": msg.content,
-                    }
-                )
+            ollama_messages: List[Dict[str, str]] = [
+                {"role": msg.role, "content": msg.content} for msg in messages
+            ]
 
-            # Build request
-            request_data = {
+            # Prepare request payload
+            payload: Dict[str, Any] = {
                 "model": self.model,
                 "messages": ollama_messages,
                 "stream": False,
@@ -157,12 +155,13 @@ class OllamaConnector(LLMConnector):
 
             # Add any additional options
             if kwargs:
-                request_data["options"].update(kwargs)
+                options_dict: Dict[str, Any] = payload["options"]  # type: ignore
+                options_dict.update(kwargs)
 
             # Make request
             response = await self._client.post(
                 "/api/chat",
-                json=request_data,
+                json=payload,
             )
             response.raise_for_status()
 

@@ -42,7 +42,7 @@ def cosine_similarity(vec1: np.ndarray, vec2: np.ndarray) -> float:
     return float(np.clip(similarity, 0.0, 1.0))
 
 
-def euclidean_distance(vec1: np.ndarray, vec2: np.ndarray) -> float:
+def euclidean_distance(vec1: List[float], vec2: List[float]) -> float:
     """
     Compute Euclidean distance between two vectors.
 
