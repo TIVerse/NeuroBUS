@@ -88,8 +88,7 @@ class OllamaConnector(LLMConnector):
 
             # Add any additional options
             if kwargs:
-                options_dict: Dict[str, Any] = payload["options"]  # type: ignore
-                options_dict.update(kwargs)
+                payload["options"].update(kwargs)
 
             # Make request
             response = await self._client.post(
