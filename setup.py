@@ -15,6 +15,7 @@ install_requires = [
     "pydantic>=2.0.0",
     "pyyaml>=6.0",
     "aiofiles>=23.0.0",
+    "msgpack>=1.0.0",
 ]
 
 # Optional dependencies
