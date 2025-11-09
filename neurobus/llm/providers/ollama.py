@@ -110,7 +110,7 @@ class OllamaConnector(LLMConnector):
             return LLMResponse(
                 content=content,
                 provider="ollama",
-                model=self.model,
+                model=self.model or "llama2",
                 tokens_used=tokens,
                 metadata={
                     "done": result.get("done", True),
