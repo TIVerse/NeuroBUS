@@ -1,6 +1,6 @@
 """Default configuration values."""
 
-from neurobus.config.schema import NeuroBusConfig
+from neurobus.config.schema import CoreConfig, MonitoringConfig, NeuroBusConfig
 
 # Default development configuration
 DEFAULT_DEV_CONFIG = NeuroBusConfig(
@@ -12,28 +12,28 @@ DEFAULT_DEV_CONFIG = NeuroBusConfig(
 DEFAULT_PROD_CONFIG = NeuroBusConfig(
     environment="production",
     debug=False,
-    core={
-        "max_subscriptions": 50000,
-        "dispatch_timeout": 60.0,
-        "handler_timeout": 30.0,
-        "max_concurrent_handlers": 500,
-    },
-    monitoring={
-        "enabled": True,
-        "prometheus_enabled": True,
-        "logging_level": "INFO",
-        "structured_logging": True,
-    },
+    core=CoreConfig(
+        max_subscriptions=50000,
+        dispatch_timeout=60.0,
+        handler_timeout=30.0,
+        max_concurrent_handlers=500,
+    ),
+    monitoring=MonitoringConfig(
+        enabled=True,
+        prometheus_enabled=True,
+        logging_level="INFO",
+        structured_logging=True,
+    ),
 )
 
 # Default testing configuration
 DEFAULT_TEST_CONFIG = NeuroBusConfig(
     environment="testing",
     debug=False,
-    monitoring={
-        "enabled": False,
-        "logging_level": "WARNING",
-    },
+    monitoring=MonitoringConfig(
+        enabled=False,
+        logging_level="WARNING",
+    ),
 )
 
 
